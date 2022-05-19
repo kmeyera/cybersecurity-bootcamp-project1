@@ -1,0 +1,47 @@
+---
+- name: Configure Elk VM with Docker
+  hosts: elk
+  remote_user: azdmin
+  become: true
+  tasks:
+    - name: Install docker.io
+      ansible.builtin.apt:
+        update_cache: true
+        force_apt_get: true
+        name: docker.io
+        state: present
+
+    - name: Install pip3
+      ansible.builtin.apt:
+        force_apt_get: true
+        name: python3-pip
+        state: present
+
+    - name: Install docker
+      ansible.builtin.pip:
+        name: docker
+        state: present
+
+    - name: Increase memory to accommodate ELK software
+      ansible.builtin.sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        state: present
+        sysctl_set: true
+        reload: true
+
+    - name: Download and launch a docker ELK container
+      community.docker.docker_container:
+        name: elk
+        image: sebp/elk:761
+        state: started
+        restart_policy: always
+        published_ports:
+          - 5601:5601
+          - 9200:9200
+          - 5044:5044
+
+    - name: Enable docker service
+      ansible.builtin.systemd:
+        name: docker
+        enabled: true

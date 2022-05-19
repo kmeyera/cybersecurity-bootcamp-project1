@@ -1,0 +1,178 @@
+######################## Filebeat Configuration ############################
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+
+#==========================  Modules configuration =============================
+filebeat.modules:
+
+#-------------------------------- System Module --------------------------------
+#- module: system
+
+#-------------------------------- Apache Module --------------------------------
+#- module: apache
+
+#-------------------------------- Auditd Module --------------------------------
+#- module: auditd
+
+#---------------------------- Elasticsearch Module ----------------------------
+- module: elasticsearch
+  # Server log
+  server:
+    enabled: true
+
+  gc:
+    enabled: true
+
+  audit:
+    enabled: true
+
+  slowlog:
+    enabled: true
+
+  deprecation:
+    enabled: true
+
+#------------------------------- Haproxy Module -------------------------------
+- module: haproxy
+  # All logs
+  log:
+    enabled: true
+
+#-------------------------------- Icinga Module --------------------------------
+#- module: icinga
+
+#--------------------------------- IIS Module ---------------------------------
+#- module: iis
+
+#-------------------------------- Kafka Module --------------------------------
+- module: kafka
+  # All logs
+  log:
+    enabled: true
+
+#-------------------------------- Kibana Module --------------------------------
+- module: kibana
+  # All logs
+  log:
+    enabled: true
+
+#------------------------------- Logstash Module -------------------------------
+#- module: logstash
+
+#------------------------------- Mongodb Module -------------------------------
+#- module: mongodb
+
+#-------------------------------- MySQL Module --------------------------------
+#- module: mysql
+
+#--------------------------------- Nats Module ---------------------------------
+- module: nats
+  # All logs
+  log:
+    enabled: true
+
+#-------------------------------- Nginx Module --------------------------------
+#- module: nginx
+
+#------------------------------- Osquery Module -------------------------------
+- module: osquery
+  result:
+    enabled: true
+
+#------------------------------ PostgreSQL Module ------------------------------
+#- module: postgresql
+
+#-------------------------------- Redis Module --------------------------------
+#- module: redis
+
+#----------------------------- Google Santa Module -----------------------------
+- module: santa
+  log:
+    enabled: true
+
+#------------------------------- Traefik Module -------------------------------
+#- module: traefik
+
+#=========================== Filebeat inputs =============================
+
+# List of inputs to fetch data.
+filebeat.inputs:
+
+#------------------------------ Log input --------------------------------
+- type: log
+
+  # Change to true to enable this input configuration.
+  enabled: false
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  # To fetch all ".log" files from a specific level of subdirectories
+  # /var/log/*/*.log can be used.
+  # For each file found under this path, a harvester is started.
+  # Make sure not file is defined twice as this can lead to unexpected behaviour.
+  paths:
+    - /var/log/*.log
+    #- c:\programdata\elasticsearch\logs\*
+
+
+#================================ Outputs ======================================
+
+# Configure what output to use when sending the data collected by the beat.
+
+#-------------------------- Elasticsearch output -------------------------------
+output.elasticsearch:
+  # Boolean flag to enable or disable the output module.
+  #enabled: true
+
+  # Array of hosts to connect to.
+  # Scheme and port can be left out and will be set to the default (http and 9200)
+  # In case you specify and additional path, the scheme is required: http://localhost:9200/path
+  # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
+  hosts: ["10.0.0.4:9200"]
+  username: "elastic"
+  password: "changeme" # TODO: Change this to the password you set
+
+
+#----------------------------- Logstash output ---------------------------------
+#output.logstash:
+
+#------------------------------- Kafka output ----------------------------------
+#output.kafka:
+
+#------------------------------- Redis output ----------------------------------
+#output.redis:
+
+#------------------------------- File output -----------------------------------
+#output.file:
+
+#----------------------------- Console output ---------------------------------
+#output.console:
+
+#================================= Paths ======================================
+
+#============================== Template =====================================
+
+# Elasticsearch template settings
+setup.template.settings:
+
+#============================== Setup ILM =====================================
+
+#============================== Kibana =====================================
+
+# Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
+# This requires a Kibana endpoint configuration.
+setup.kibana:
+  host: "10.0.0.4:5601" # TODO: Change this to the IP address of your ELK server
+
+
+#================================ Logging ======================================
+logging.to_files: true
+logging.files:
+
+#============================== X-Pack Monitoring ===============================
+
+#================================ HTTP Endpoint ======================================
+
+#============================= Process Security ================================
+
+#================================= Migration ==================================
